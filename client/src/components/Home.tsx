@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 
-function App() {
+function Home() {
   useEffect(() => {
     const getServer = async () => {
-      const response = await axios.get("http://localhost:5000");
+      const response = await axios.get("http://localhost:5000/api/home");
       console.log(response);
     };
 
@@ -14,4 +14,4 @@ function App() {
   return <div className="App">hello</div>;
 }
 
-export default App;
+export default Home;
