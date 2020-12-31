@@ -1,2 +1,1 @@
-# stock-journal-internal
- 
+# Stock Journal Internal
