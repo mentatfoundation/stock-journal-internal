@@ -1,6 +1,7 @@
 package server
 
 import (
+	"mentatfoundation/stock-journal/server/config"
 	authHandlers "mentatfoundation/stock-journal/server/handlers/authentication"
 	"net/http"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-func Start() {
+func Start(c config.ConfigurationSettings) {
 	e := echo.New()
 
 	e.Use(middleware.CORS())
@@ -26,5 +27,5 @@ func Start() {
 
 	e.GET("/api/auth/login", authHandler.Login)
 
-	e.Logger.Fatal(e.Start(":5000"))
+	e.Logger.Fatal(e.Start(":" + c.Port))
 }

@@ -2,8 +2,10 @@ package main
 
 import (
 	"mentatfoundation/stock-journal/server"
+	"mentatfoundation/stock-journal/server/config"
 )
 
 func main() {
-	server.Start()
+	configuration := config.ConfigurationSettings{}
+	server.Start(configuration)
 }
