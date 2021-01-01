@@ -1,7 +1,7 @@
 package server
 
 import (
-	auth_handlers "mentatfoundation/stock-journal/server/handlers/authentication"
+	authHandlers "mentatfoundation/stock-journal/server/handlers/authentication"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -22,7 +22,7 @@ func Start() {
 		HTML5: true,
 	}))
 
-	authHandler := auth_handlers.AuthHandler{}
+	authHandler := authHandlers.AuthHandler{}
 
 	e.GET("/api/auth/login", authHandler.Login)
 
