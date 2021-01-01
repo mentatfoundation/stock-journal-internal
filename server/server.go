@@ -1,6 +1,7 @@
 package server
 
 import (
+	auth_handlers "mentatfoundation/stock-journal/server/handlers/authentication"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -20,6 +21,10 @@ func Start() {
 		Root:  "client/build",
 		HTML5: true,
 	}))
+
+	authHandler := auth_handlers.AuthHandler{}
+
+	e.GET("/api/auth/login", authHandler.Login)
 
 	e.Logger.Fatal(e.Start(":5000"))
 }
