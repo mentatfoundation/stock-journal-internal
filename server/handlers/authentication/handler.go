@@ -19,16 +19,16 @@ func New(l logger.Logger) *Handler {
 }
 
 func (a *Handler) Login(c echo.Context) error {
-	a.Logger.Info("hello")
+	a.Logger.Info("Login", "hello")
 	return c.String(http.StatusOK, "login")
 }
 
 func (a *Handler) Logout(c echo.Context) error {
-	a.Logger.Info("logout")
+	a.Logger.Info("logout", "logout")
 	return c.String(http.StatusOK, "logout")
 }
 
 func (a *Handler) User(c echo.Context) error {
-	a.Logger.Info(c.Param("id"))
+	a.Logger.Info("Login:user", c.Param("id"))
 	return c.String(http.StatusOK, c.Param("id"))
 }

@@ -46,8 +46,6 @@ func (a App) ConfigureRoutes() {
 	// setup logger
 	logger := globalLogger.New(a.Config.Env)
 
-	logger.Info("hello")
-
 	// setup services
 	as := authService.New()
 

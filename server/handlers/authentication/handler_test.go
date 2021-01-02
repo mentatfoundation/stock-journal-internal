@@ -10,14 +10,19 @@ import (
 	"testing"
 )
 
-var localLogger logger.Logger
+var testLogger logger.Logger
 var e *echo.Echo
 var req *http.Request
 var rec *httptest.ResponseRecorder
 var c echo.Context
 
+type log struct{}
+
+func (tl log) Info(message string) {}
+
 func init() {
-	localLogger = logger.New("dev")
+
+	testLogger = log{}
 }
 
 func TestLogin(t *testing.T) {
@@ -26,7 +31,7 @@ func TestLogin(t *testing.T) {
 	setupTest("get", "")
 
 	// configure handler
-	h := New(localLogger)
+	h := New(testLogger)
 
 	// Assertions
 	if assert.NoError(t, h.Login(c)) {
@@ -41,7 +46,7 @@ func TestLogout(t *testing.T) {
 	setupTest("get", "")
 
 	// configure handler
-	h := New(localLogger)
+	h := New(testLogger)
 
 	// Assertions
 	if assert.NoError(t, h.Logout(c)) {
@@ -58,7 +63,7 @@ func TestCustomer(t *testing.T) {
 	c.SetParamValues("1")
 
 	// configure handler
-	h := New(localLogger)
+	h := New(testLogger)
 
 	// Assertions
 	if assert.NoError(t, h.User(c)) {

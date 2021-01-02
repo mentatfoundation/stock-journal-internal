@@ -6,16 +6,15 @@ import (
 
 // make interface for other loggers
 type Logger interface {
-	Info(message string)
+	Info(operator string, message string)
 }
 
 type logger struct{}
 
 func New(env string) *logger {
-	fmt.Println(env)
 	return &logger{}
 }
 
-func (l *logger) Info(message string) {
-	fmt.Println(message)
+func (l *logger) Info(operator string, message string) {
+	fmt.Println(operator + "::" + message)
 }
