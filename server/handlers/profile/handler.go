@@ -6,7 +6,7 @@ import (
 
 	authservice "mentatfoundation/stock-journal/server/services"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {

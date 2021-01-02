@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"mentatfoundation/stock-journal/server/config"
 )
 
 type Logger interface {
@@ -10,14 +11,22 @@ type Logger interface {
 
 type localLogger struct{}
 
-func New(env string) Logger {
-	switch env {
+type logger struct {
+}
+
+func New(c config.ConfigurationSettings) Logger {
+	switch c.Env {
 	case "dev":
 		return &localLogger{}
 	}
-	return &localLogger{}
+
+	return &logger{}
 }
 
 func (l *localLogger) Info(operator string, message string) {
+	fmt.Println(operator + "::" + message)
+}
+
+func (l *logger) Info(operator string, message string) {
 	fmt.Println(operator + "::" + message)
 }
