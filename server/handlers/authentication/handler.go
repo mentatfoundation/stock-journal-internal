@@ -1,17 +1,27 @@
 package authentication
 
 import (
+	"mentatfoundation/stock-journal/server/logger"
 	"net/http"
 
-	authservice "mentatfoundation/stock-journal/server/services"
+	authService "mentatfoundation/stock-journal/server/services"
 
 	"github.com/labstack/echo"
 )
 
-type AuthHandler struct {
-	AuthService *authservice.AuthService
+type Handler struct {
+	AuthService *authService.AuthService
+	Logger      *logger.Logger
 }
 
-func (a *AuthHandler) Login(c echo.Context) error {
+func New(as *authService.AuthService, l *logger.Logger) *Handler {
+	return &Handler{
+		AuthService: as,
+		Logger:      l,
+	}
+}
+
+func (a *Handler) Login(c echo.Context) error {
+	a.Logger.Info("hello")
 	return c.String(http.StatusOK, "login")
 }
