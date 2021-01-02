@@ -7,7 +7,7 @@ import (
 	authHandler "mentatfoundation/stock-journal/server/handlers/authentication"
 	profileHandler "mentatfoundation/stock-journal/server/handlers/profile"
 	globalLogger "mentatfoundation/stock-journal/server/logger"
-	authService "mentatfoundation/stock-journal/server/services"
+	"mentatfoundation/stock-journal/server/services"
 	"net/http"
 )
 
@@ -47,7 +47,8 @@ func (a App) ConfigureRoutes() {
 	logger := globalLogger.New(a.Config.Env)
 
 	// setup services
-	as := authService.New()
+	as := services.NewAuthService()
+	//ss := services.NewStocksService()
 
 	// configure handler & dependencies
 	ah := authHandler.New(logger)

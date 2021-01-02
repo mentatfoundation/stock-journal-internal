@@ -1,4 +1,4 @@
-package authentication
+package services
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 type AuthService struct{}
 
-func New() *AuthService {
+func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 

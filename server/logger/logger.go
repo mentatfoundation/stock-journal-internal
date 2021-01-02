@@ -4,17 +4,20 @@ import (
 	"fmt"
 )
 
-// make interface for other loggers
 type Logger interface {
 	Info(operator string, message string)
 }
 
-type logger struct{}
+type localLogger struct{}
 
-func New(env string) *logger {
-	return &logger{}
+func New(env string) Logger {
+	switch env {
+	case "dev":
+		return &localLogger{}
+	}
+	return &localLogger{}
 }
 
-func (l *logger) Info(operator string, message string) {
+func (l *localLogger) Info(operator string, message string) {
 	fmt.Println(operator + "::" + message)
 }
