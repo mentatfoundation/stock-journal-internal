@@ -4,20 +4,17 @@ import (
 	"mentatfoundation/stock-journal/server/logger"
 	"net/http"
 
-	authService "mentatfoundation/stock-journal/server/services"
-
 	"github.com/labstack/echo"
 )
 
 type Handler struct {
-	AuthService *authService.AuthService
-	Logger      *logger.Logger
+	//AuthService *authService.AuthService
+	Logger logger.Logger
 }
 
-func New(as *authService.AuthService, l *logger.Logger) *Handler {
+func New(l logger.Logger) *Handler {
 	return &Handler{
-		AuthService: as,
-		Logger:      l,
+		Logger: l,
 	}
 }
 

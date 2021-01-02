@@ -11,10 +11,10 @@ import (
 
 type Handler struct {
 	AuthService *authservice.AuthService
-	Logger      *logger.Logger
+	Logger      logger.Logger
 }
 
-func New(as *authservice.AuthService, l *logger.Logger) *Handler {
+func New(as *authservice.AuthService, l logger.Logger) *Handler {
 	return &Handler{
 		AuthService: as,
 		Logger:      l,

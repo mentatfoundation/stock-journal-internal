@@ -43,16 +43,19 @@ func (a App) ConfigureMiddleware() {
 
 func (a App) ConfigureRoutes() {
 
+	// setup logger
+	logger := globalLogger.New(a.Config.Env)
+
+	logger.Info("hello")
+
 	// setup services
 	as := authService.New()
 
-	// setup logger
-	logger := globalLogger.New(a.Config)
-
 	// configure handler & dependencies
-	ah := authHandler.New(as, logger)
+	ah := authHandler.New(logger)
 	ph := profileHandler.New(as, logger)
 
+	// api group
 	api := a.Server.Group("/api")
 
 	api.GET("/auth/login", ah.Login)

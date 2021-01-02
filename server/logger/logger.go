@@ -2,18 +2,20 @@ package logger
 
 import (
 	"fmt"
-	"mentatfoundation/stock-journal/server/config"
 )
 
 // make interface for other loggers
-
-type Logger struct{}
-
-func New(c config.ConfigurationSettings) *Logger {
-	fmt.Println(c.Port)
-	return &Logger{}
+type Logger interface {
+	Info(message string)
 }
 
-func (l *Logger) Info(message string) {
+type logger struct{}
+
+func New(env string) *logger {
+	fmt.Println(env)
+	return &logger{}
+}
+
+func (l *logger) Info(message string) {
 	fmt.Println(message)
 }
