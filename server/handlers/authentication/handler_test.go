@@ -18,7 +18,8 @@ var c echo.Context
 
 type log struct{}
 
-func (tl log) Info(operator string, message string) {}
+func (tl log) Info(operator string, message string) {
+}
 
 func init() {
 	testLogger = log{}
