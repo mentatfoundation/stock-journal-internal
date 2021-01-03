@@ -29,6 +29,6 @@ func (c ConfigurationSettings) IsDev() bool {
 
 func (c ConfigurationSettings) DisplaySettings() {
 	fmt.Println("Application Settings:")
-	fmt.Println("⇨ " + c.Env)
-	fmt.Println("⇨ " + c.Port)
+	fmt.Println("⇨  " + c.Env)
+	fmt.Println("⇨  " + c.Port)
 }

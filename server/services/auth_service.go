@@ -31,21 +31,24 @@ func (a *authService) Test() {
 
 func (a *authService) CreateUser(id string) uuid.UUID {
 	newUserId := uuid.New()
+	a.logger.Info("CreateUser", "creating new user with id: "+newUserId.String())
 	item := struct {
-		id   uuid.UUID
-		name string
+		Id   string `json:"id"`
+		Name string `json:"name"`
 	}{
-		id:   newUserId,
-		name: "Brian",
+		Id:   newUserId.String(),
+		Name: "Brian",
 	}
 
 	av, err := dynamodbattribute.MarshalMap(item)
+
+	a.logger.Info("CreateUser", "unmarshalling user "+newUserId.String())
+
 	if err != nil {
 		fmt.Println("Got error marshalling new movie item:")
 		fmt.Println(err.Error())
 	}
 
-	// Create item in table Movies
 	tableName := "stock-journal-users-dev"
 
 	input := &dynamodb.PutItemInput{
