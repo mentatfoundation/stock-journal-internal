@@ -11,8 +11,7 @@ type Logger interface {
 
 type localLogger struct{}
 
-type logger struct {
-}
+type logger struct{}
 
 func New(c config.ConfigurationSettings) Logger {
 	switch c.Env {
