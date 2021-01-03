@@ -3,6 +3,7 @@ package authentication
 import (
 	"github.com/labstack/echo/v4"
 	"mentatfoundation/stock-journal/server/logger"
+	"mentatfoundation/stock-journal/server/models"
 	"mentatfoundation/stock-journal/server/services"
 	"net/http"
 )
@@ -12,7 +13,7 @@ type Handler struct {
 	logger      logger.Logger
 }
 
-func New(logger logger.Logger, authService services.AuthService) *Handler {
+func NewAuthHandler(logger logger.Logger, authService services.AuthService) *Handler {
 	return &Handler{
 		logger:      logger,
 		authService: authService,
@@ -36,6 +37,20 @@ func (a *Handler) Test(c echo.Context) error {
 }
 
 func (a *Handler) SignUp(c echo.Context) error {
-	newUserId := a.authService.CreateUser("1")
-	return c.String(http.StatusOK, newUserId.String())
+
+	// process data
+	newUser := new(models.NewUser)
+	if err := c.Bind(newUser); err != nil {
+		return c.String(http.StatusBadRequest, "")
+	}
+
+	newUser.IsValid()
+
+	// call service
+	err := a.authService.SignUp(*newUser)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "0")
+	}
+
+	return c.NoContent(http.StatusCreated)
 }

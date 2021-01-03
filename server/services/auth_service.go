@@ -7,10 +7,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
 	"mentatfoundation/stock-journal/server/logger"
+	"mentatfoundation/stock-journal/server/models"
 )
 
 type AuthService interface {
-	CreateUser(id string) uuid.UUID
+	SignUp(newUser models.NewUser) error
 }
 
 type authService struct {
@@ -29,15 +30,17 @@ func (a *authService) Test() {
 	fmt.Println("hello")
 }
 
-func (a *authService) CreateUser(id string) uuid.UUID {
+func (a *authService) SignUp(newUser models.NewUser) error {
 	newUserId := uuid.New()
 	a.logger.Info("CreateUser", "creating new user with id: "+newUserId.String())
 	item := struct {
-		Id   string `json:"id"`
-		Name string `json:"name"`
+		Id       string `json:"id"`
+		Name     string `json:"name"`
+		Password string `json:"password"`
 	}{
-		Id:   newUserId.String(),
-		Name: "Brian",
+		Id:       newUserId.String(),
+		Name:     newUser.Username,
+		Password: newUser.Password,
 	}
 
 	av, err := dynamodbattribute.MarshalMap(item)
@@ -46,7 +49,7 @@ func (a *authService) CreateUser(id string) uuid.UUID {
 
 	if err != nil {
 		fmt.Println("Got error marshalling new movie item:")
-		fmt.Println(err.Error())
+		return err
 	}
 
 	tableName := "stock-journal-users-dev"
@@ -60,8 +63,9 @@ func (a *authService) CreateUser(id string) uuid.UUID {
 	if err != nil {
 		fmt.Println("Got error calling PutItem:")
 		fmt.Println(err.Error())
+		return err
 
 	}
 
-	return newUserId
+	return nil
 }
