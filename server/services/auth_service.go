@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
 	"mentatfoundation/stock-journal/server/logger"
-	"os"
 )
 
 type AuthService interface {
@@ -44,7 +43,6 @@ func (a *authService) CreateUser(id string) uuid.UUID {
 	if err != nil {
 		fmt.Println("Got error marshalling new movie item:")
 		fmt.Println(err.Error())
-		os.Exit(1)
 	}
 
 	// Create item in table Movies

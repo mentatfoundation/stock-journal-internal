@@ -24,6 +24,7 @@ func New(c config.ConfigurationSettings) App {
 }
 
 func (a App) Configure() {
+	a.Config.DisplaySettings()
 	a.ConfigureMiddleware()
 	a.ConfigureRoutes()
 }
