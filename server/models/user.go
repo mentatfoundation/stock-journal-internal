@@ -1,6 +1,6 @@
 package models
 
-import "fmt"
+import "errors"
 
 type User struct {
 }
@@ -10,7 +10,10 @@ type NewUser struct {
 	Password string `json:"password" validate:"required, email"`
 }
 
-func (u NewUser) IsValid() {
-	fmt.Println(u.Username)
-	fmt.Println(u.Password)
+func (u NewUser) IsValid() error {
+	if len(u.Password) > 0 && len(u.Username) > 0 {
+		return nil
+	}
+
+	return errors.New("invalid")
 }

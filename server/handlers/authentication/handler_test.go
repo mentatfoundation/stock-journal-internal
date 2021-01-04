@@ -4,9 +4,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"mentatfoundation/stock-journal/server/config"
+	"mentatfoundation/stock-journal/server/handlers/authentication/mocks"
 	"mentatfoundation/stock-journal/server/logger"
+	"mentatfoundation/stock-journal/server/models"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 )
@@ -16,27 +19,45 @@ var req *http.Request
 var rec *httptest.ResponseRecorder
 var c echo.Context
 var testConfig config.ConfigurationSettings
+var testLogger logger.Logger
+var mockAuthService mocks.AuthServiceMock
+var authHandler *Handler
 
-func init() {
-
+func TestMain(m *testing.M) {
 	testConfig = config.ConfigurationSettings{
 		Env: "test",
 	}
+	testLogger = logger.New(testConfig)
+	mockAuthService = mocks.AuthServiceMock{}
+	authHandler = NewAuthHandler(testLogger, mockAuthService)
+	os.Exit(m.Run())
 }
 
 func TestTheTest(t *testing.T) {
 
 	// Setup
-	setupTest("get", "")
+	body := `{"username":"brian", "password":"password"}`
+	setupTest("post", body)
 
-	// configure handler
-	l := logger.New(testConfig)
-	h := NewAuthHandler(l)
+	mocks.SignUpMock = func(newUser models.NewUser) error {
+		return nil
+	}
 
-	// Assertions
-	if assert.NoError(t, h.Test(c)) {
-		assert.Equal(t, http.StatusOK, rec.Code)
-		assert.Equal(t, "login", rec.Body.String())
+	//Assertions
+	if assert.NoError(t, authHandler.SignUp(c)) {
+		assert.Equal(t, http.StatusCreated, rec.Code)
+	}
+}
+
+func TestShouldBreak(t *testing.T) {
+
+	// Setup
+	body := `{"username":"brian"}`
+	setupTest("post", body)
+
+	//Assertions
+	if assert.NoError(t, authHandler.SignUp(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 }
 
@@ -49,6 +70,7 @@ func setupTest(method string, body string) {
 
 	case "post":
 		req = httptest.NewRequest(http.MethodPost, "/", strings.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec = httptest.NewRecorder()
 
 	}
