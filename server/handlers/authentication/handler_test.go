@@ -3,10 +3,10 @@ package authentication
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
-	"mentatfoundation/stock-journal/server/config"
 	"mentatfoundation/stock-journal/server/handlers/authentication/mocks"
 	"mentatfoundation/stock-journal/server/logger"
 	"mentatfoundation/stock-journal/server/models"
+	"mentatfoundation/stock-journal/server/services"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -18,18 +18,14 @@ var e *echo.Echo
 var req *http.Request
 var rec *httptest.ResponseRecorder
 var c echo.Context
-var testConfig config.ConfigurationSettings
-var testLogger logger.Logger
-var mockAuthService mocks.AuthServiceMock
+var mockLogger logger.Logger
+var mockAuthService services.AuthService
 var authHandler *Handler
 
 func TestMain(m *testing.M) {
-	testConfig = config.ConfigurationSettings{
-		Env: "test",
-	}
-	testLogger = logger.New(testConfig)
+	mockLogger = mocks.LoggerMock{}
 	mockAuthService = mocks.AuthServiceMock{}
-	authHandler = NewAuthHandler(testLogger, mockAuthService)
+	authHandler = NewAuthHandler(mockLogger, mockAuthService)
 	os.Exit(m.Run())
 }
 

@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"mentatfoundation/stock-journal/server/handlers/authentication"
-	profileHandler "mentatfoundation/stock-journal/server/handlers/profile"
+	"mentatfoundation/stock-journal/server/handlers/profile"
 	globalLogger "mentatfoundation/stock-journal/server/logger"
 	"mentatfoundation/stock-journal/server/services"
 	"os"
@@ -24,17 +24,18 @@ func (a App) ConfigureRoutes() {
 		os.Exit(1)
 	}
 
+	// dynamo
 	svc := dynamodb.New(sess)
 
 	// setup logger
 	logger := globalLogger.New(a.Config)
 
 	// setup services
-	as := services.NewAuthService(logger, svc)
+	authSvc := services.NewAuthService(logger, svc)
 
-	// configure handler & dependencies
-	ah := authentication.NewAuthHandler(logger, as)
-	ph := profileHandler.New(as, logger)
+	// configure handler
+	ah := authentication.NewAuthHandler(logger, authSvc)
+	ph := profile.NewProfileHandler(logger, authSvc)
 
 	// api group
 	api := a.Server.Group("/api")

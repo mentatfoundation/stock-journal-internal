@@ -13,7 +13,7 @@ type Handler struct {
 	Logger      logger.Logger
 }
 
-func New(as authservice.AuthService, l logger.Logger) *Handler {
+func NewProfileHandler(l logger.Logger, as authservice.AuthService) *Handler {
 	return &Handler{
 		AuthService: as,
 		Logger:      l,
