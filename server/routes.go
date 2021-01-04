@@ -40,7 +40,6 @@ func (a App) ConfigureRoutes() {
 	// api group
 	api := a.Server.Group("/api")
 
-	api.GET("/test", ah.Test)
 	api.GET("/shit", ph.Login)
 	api.POST("/auth/signup", ah.SignUp)
 }

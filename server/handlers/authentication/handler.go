@@ -21,37 +21,34 @@ func NewAuthHandler(logger logger.Logger, authService services.AuthService) *Han
 	}
 }
 
-func (a *Handler) Login(c echo.Context) error {
+func (h *Handler) Login(c echo.Context) error {
 	return c.String(http.StatusOK, "login")
 }
 
-func (a *Handler) Logout(c echo.Context) error {
+func (h *Handler) Logout(c echo.Context) error {
 	return c.String(http.StatusOK, "logout")
 }
 
-func (a *Handler) User(c echo.Context) error {
+func (h *Handler) User(c echo.Context) error {
 	return c.String(http.StatusOK, c.Param("id"))
 }
 
-func (a *Handler) Test(c echo.Context) error {
-	return c.String(http.StatusOK, "login")
-}
-
-func (a *Handler) SignUp(c echo.Context) error {
+func (h *Handler) SignUp(c echo.Context) error {
 
 	// process data
 	newUser := new(models.NewUser)
 	if err := c.Bind(newUser); err != nil {
-		fmt.Println(err.Error())
-		return c.String(http.StatusBadRequest, "")
+		return c.String(http.StatusBadRequest, "Unable to process request.")
 	}
 
 	if err := newUser.IsValid(); err != nil {
-		return c.String(http.StatusBadRequest, "")
+		fmt.Println("here")
+		return c.String(http.StatusBadRequest, "user invalid.")
 	}
 
 	// call service
-	err := a.authService.SignUp(*newUser)
+	err := h.authService.SignUp(*newUser)
+
 	if err != nil {
 		return c.String(http.StatusBadRequest, "0")
 	}

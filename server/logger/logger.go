@@ -13,14 +13,10 @@ type localLogger struct{}
 
 type logger struct{}
 
-type testLogger struct{}
-
 func New(c config.ConfigurationSettings) Logger {
 	switch c.Env {
 	case "dev":
 		return &localLogger{}
-	case "test":
-		return &testLogger{}
 	}
 
 	return &logger{}
@@ -33,5 +29,3 @@ func (l *localLogger) Info(operator string, message string) {
 func (l *logger) Info(operator string, message string) {
 	fmt.Println(operator + "::" + message)
 }
-
-func (l *testLogger) Info(operator string, message string) {}

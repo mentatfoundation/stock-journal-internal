@@ -56,6 +56,31 @@ func TestShouldBreak(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 }
+func TestUserModelValidation(t *testing.T) {
+
+	// Setup
+	body := `{"name":"brian"}`
+	setupTest("post", body)
+
+	//Assertions
+	if assert.NoError(t, authHandler.SignUp(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, "user invalid.", rec.Body.String())
+	}
+}
+
+func TestUserModelBindShouldFail(t *testing.T) {
+
+	// Setup
+	body := `{"name":"brian`
+	setupTest("post", body)
+
+	//Assertions
+	if assert.NoError(t, authHandler.SignUp(c)) {
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+		assert.Equal(t, "Unable to process request.", rec.Body.String())
+	}
+}
 
 func setupTest(method string, body string) {
 	e = echo.New()
