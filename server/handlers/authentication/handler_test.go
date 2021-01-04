@@ -3,10 +3,10 @@ package authentication
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
-	"mentatfoundation/stock-journal/server/handlers/authentication/mocks"
 	"mentatfoundation/stock-journal/server/logger"
 	"mentatfoundation/stock-journal/server/models"
 	"mentatfoundation/stock-journal/server/services"
+	authServiceMocks "mentatfoundation/stock-journal/server/services/mocks"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -23,8 +23,8 @@ var mockAuthService services.AuthService
 var authHandler *Handler
 
 func TestMain(m *testing.M) {
-	mockLogger = mocks.LoggerMock{}
-	mockAuthService = mocks.AuthServiceMock{}
+	mockLogger = logger.Mock{}
+	mockAuthService = authServiceMocks.AuthServiceMock{}
 	authHandler = NewAuthHandler(mockLogger, mockAuthService)
 	os.Exit(m.Run())
 }
@@ -35,11 +35,11 @@ func TestTheTest(t *testing.T) {
 	body := `{"username":"brian", "password":"password"}`
 	setupTest("post", body)
 
-	mocks.SignUpMock = func(newUser models.NewUser) error {
+	authServiceMocks.SignUpMock = func(newUser models.NewUser) error {
 		return nil
 	}
 
-	//Assertions
+	// Assert
 	if assert.NoError(t, authHandler.SignUp(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
 	}
@@ -56,6 +56,7 @@ func TestShouldBreak(t *testing.T) {
 		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 }
+
 func TestUserModelValidation(t *testing.T) {
 
 	// Setup

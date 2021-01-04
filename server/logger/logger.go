@@ -18,7 +18,6 @@ func New(c config.ConfigurationSettings) Logger {
 	case "dev":
 		return &localLogger{}
 	}
-
 	return &logger{}
 }
 

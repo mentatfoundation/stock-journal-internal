@@ -1,4 +1,4 @@
-package mocks
+package auth_service_mocks
 
 import "mentatfoundation/stock-journal/server/models"
 
