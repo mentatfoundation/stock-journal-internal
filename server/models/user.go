@@ -1,19 +1,37 @@
 package models
 
-import "errors"
+import "fmt"
 
 type User struct {
 }
 
 type NewUser struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required, email"`
+	Username string
+	Password string
 }
 
-func (u NewUser) IsValid() error {
+type ValidationError struct {
+	Field   string
+	Message string
+}
+
+type UserInvalidResponse struct {
+	Message    string             `json:"message,omitempty"`
+	Error      string             `json:"error,omitempty"`
+	Validation []*ValidationError `json:"validation,omitempty"`
+}
+
+func (u NewUser) IsValid() (bool, *UserInvalidResponse) {
+	var valError []*ValidationError
+
 	if len(u.Password) > 0 && len(u.Username) > 0 {
-		return nil
+		return true, nil
 	}
 
-	return errors.New("invalid")
+	if u.Password == "" {
+		valError = append(valError, &ValidationError{Message: "Password is required", Field: "password"})
+	}
+
+	fmt.Println(valError)
+	return false, &UserInvalidResponse{Message: "Invalid", Validation: valError}
 }

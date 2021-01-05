@@ -24,7 +24,7 @@ func (a App) ConfigureRoutes() {
 		os.Exit(1)
 	}
 
-	// dynamo
+	// database connection
 	svc := dynamodb.New(sess)
 
 	// setup logger

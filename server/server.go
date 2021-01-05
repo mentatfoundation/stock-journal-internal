@@ -53,6 +53,5 @@ func (a App) ConfigureMiddleware() {
 }
 
 func (a App) Run() {
-	a.Configure()
 	a.Server.Logger.Fatal(a.Server.Start(":" + a.Config.Port))
 }

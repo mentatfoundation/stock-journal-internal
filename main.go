@@ -8,5 +8,6 @@ import (
 func main() {
 	configuration := config.New()
 	app := server.New(configuration)
+	app.Configure()
 	app.Run()
 }

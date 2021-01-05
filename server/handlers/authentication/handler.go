@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"mentatfoundation/stock-journal/server/logger"
 	"mentatfoundation/stock-journal/server/models"
@@ -38,12 +37,11 @@ func (h *Handler) SignUp(c echo.Context) error {
 	// process data
 	newUser := new(models.NewUser)
 	if err := c.Bind(newUser); err != nil {
-		return c.String(http.StatusBadRequest, "Unable to process request.")
+		return c.JSON(http.StatusBadRequest, BindErrorResponse)
 	}
 
-	if err := newUser.IsValid(); err != nil {
-		fmt.Println("here")
-		return c.String(http.StatusBadRequest, "user invalid.")
+	if ok, err := newUser.IsValid(); !ok {
+		return c.JSON(http.StatusBadRequest, err)
 	}
 
 	// call service
