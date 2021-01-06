@@ -32,7 +32,15 @@ func (a *authService) Test() {
 
 func (a *authService) SignUp(newUser models.NewUser) error {
 	newUserId := uuid.New()
+
 	a.logger.Info("CreateUser", "creating new user with id: "+newUserId.String())
+
+	hashedPassword, err := HashPassword(newUser.Password)
+
+	if err != nil {
+		a.logger.Info("CreateUser", "Error hashing password"+err.Error())
+	}
+
 	item := struct {
 		Id       string `json:"id"`
 		Name     string `json:"name"`
@@ -40,7 +48,7 @@ func (a *authService) SignUp(newUser models.NewUser) error {
 	}{
 		Id:       newUserId.String(),
 		Name:     newUser.Username,
-		Password: newUser.Password,
+		Password: hashedPassword,
 	}
 
 	av, err := dynamodbattribute.MarshalMap(item)
