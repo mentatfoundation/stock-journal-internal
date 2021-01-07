@@ -6,12 +6,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
+	"mentatfoundation/stock-journal/server/errors"
 	"mentatfoundation/stock-journal/server/logger"
 	"mentatfoundation/stock-journal/server/models"
 )
 
 type AuthService interface {
 	SignUp(newUser models.NewUser) error
+	Login(newUser models.NewUser) (string, *errors.Error)
 }
 
 type authService struct {
@@ -26,14 +28,8 @@ func NewAuthService(logger logger.Logger, db *dynamodb.DynamoDB) AuthService {
 	}
 }
 
-func (a *authService) Test() {
-	fmt.Println("hello")
-}
-
 func (a *authService) SignUp(newUser models.NewUser) error {
 	newUserId := uuid.New()
-
-	a.logger.Info("CreateUser", "creating new user with id: "+newUserId.String())
 
 	hashedPassword, err := HashPassword(newUser.Password)
 
@@ -53,10 +49,8 @@ func (a *authService) SignUp(newUser models.NewUser) error {
 
 	av, err := dynamodbattribute.MarshalMap(item)
 
-	a.logger.Info("CreateUser", "unmarshalling user "+newUserId.String())
-
 	if err != nil {
-		fmt.Println("Got error marshalling new movie item:")
+		a.logger.Info("CreateUser", "Error unmarshalling user "+err.Error())
 		return err
 	}
 
@@ -68,6 +62,7 @@ func (a *authService) SignUp(newUser models.NewUser) error {
 	}
 
 	_, err = a.db.PutItem(input)
+
 	if err != nil {
 		fmt.Println("Got error calling PutItem:")
 		fmt.Println(err.Error())
@@ -76,4 +71,40 @@ func (a *authService) SignUp(newUser models.NewUser) error {
 	}
 
 	return nil
+}
+
+func (a *authService) Login(user models.NewUser) (string, *errors.Error) {
+	result, err := a.db.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String("stock-journal-users-dev"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"username": {
+				S: aws.String(user.Username),
+			},
+		},
+	})
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return "", &errors.Error{Code: 500}
+	}
+
+	if result.Item == nil {
+		return "", nil
+	}
+
+	userFound := &models.User{}
+
+	if err := dynamodbattribute.UnmarshalMap(result.Item, &userFound); err != nil {
+		return "", errors.Create("LoginSvcUnmarshall", "Unable to login", 500)
+		//return "", &appError.Error{Code: 500, Message: "Error logging in"}
+	}
+
+	if !PasswordsMatch(userFound.Password, user.Password) {
+		return "", &errors.Error{Code: 400, Message: "Login information invalid", Operation: "PasswordsMatch"}
+	}
+
+	return "", &errors.Error{
+		Code:      500,
+		Message:   "hello",
+		Operation: "LoginSvcCatchAll"}
 }

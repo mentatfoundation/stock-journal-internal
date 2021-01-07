@@ -3,6 +3,9 @@ package models
 import "fmt"
 
 type User struct {
+	Id       string
+	Username string
+	Password string
 }
 
 type NewUser struct {

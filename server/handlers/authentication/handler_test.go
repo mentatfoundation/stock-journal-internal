@@ -38,7 +38,6 @@ func TestTheTest(t *testing.T) {
 	authServiceMocks.SignUpMock = func(newUser models.NewUser) error {
 		return nil
 	}
-
 	// Assert
 	if assert.NoError(t, authHandler.SignUp(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
